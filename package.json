@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "poc:accesos": "node poc/accesos.mjs",
-    "poc:litoralgas": "node --env-file=.env poc/litoralgas.mjs"
+    "grabar": "node poc/grabar.mjs"
   },
   "dependencies": {
     "next": "16.3.5",

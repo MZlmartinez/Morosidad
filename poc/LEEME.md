@@ -15,7 +15,7 @@ Se corren **desde una conexión en Argentina**: TGI y EPE no responden desde el 
    copy .env.example .env
    notepad .env
    ```
-   En el Bloc de notas completá tu usuario y contraseña de Litoral Gas y guardá.
+   (Ya no hace falta completar .env: el grabador no usa credenciales guardadas.)
 
 ## Pruebas
 
@@ -25,10 +25,12 @@ npm run poc:accesos
 Lista qué portales responden y qué controles (captcha, etc.) tienen.
 
 ```powershell
-npm run poc:litoralgas
+npm run grabar -- tgi
 ```
-Abre un Chrome visible e inicia sesión. Navegá a "Pagos y Deudas" y a tus
-facturas: el script graba las respuestas de la Oficina Virtual durante 3 minutos
-(o hasta que cierres la ventana) en `poc/resultados/litoralgas.json`.
+Abre un navegador visible en el portal (`api`, `tgi`, `epe`, `litoralgas` o `assa`).
+Hacé la consulta de deuda **a mano**, como siempre (incluido cualquier "No soy un
+robot"), y cerrá la ventana cuando veas el resultado. Queda guardado en
+`poc/resultados/<fuente>-<fecha>.json`: lo que devolvió el portal, sin cookies y
+con contraseñas, códigos y tokens enmascarados.
 
 `poc/resultados/` no se sube a GitHub: contiene tus datos.
