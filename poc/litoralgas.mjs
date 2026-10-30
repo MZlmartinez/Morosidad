@@ -27,9 +27,14 @@ page.on("response", async (res) => {
 });
 
 await page.goto("https://www.litoralgas.com.ar/ov/login", { waitUntil: "networkidle" });
-await page.locator('input[type="email"], input[formcontrolname*="mail" i], input[formcontrolname*="user" i]').first().fill(usuario);
+await page.locator("input[type=password]").waitFor();
+// Puede haber un aviso con botón "Aceptar" tapando el formulario.
+const aceptar = page.getByRole("button", { name: "Aceptar" });
+if (await aceptar.isVisible().catch(() => false)) await aceptar.click();
+// Angular Material: el usuario es un input de texto sin name (mat-input-0).
+await page.locator('input[type="text"], input[type="email"]').first().fill(usuario);
 await page.locator('input[type="password"]').first().fill(password);
-await page.locator('input[type="password"]').first().press("Enter");
+await page.getByRole("button", { name: "Ingresar" }).click();
 
 console.log(`\nSesión iniciada (si no, completala en la ventana).`);
 console.log(`Navegá a "Pagos y Deudas" y a tus facturas. Grabo ${MINUTOS} minutos; cerrá la ventana para terminar antes.\n`);

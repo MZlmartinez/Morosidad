@@ -68,10 +68,12 @@ Inspección de los formularios públicos, sin datos reales todavía.
 - **Clave para inmobiliarias:** con perfil digital verificado se pueden *asociar
   cuentas de terceros* (nº de cuenta + código de gestión) y ver deuda, credencial
   de pago y recibos de todas desde un solo perfil.
-- La consulta con código de gestión vive en `siat.rosario.gob.ar`. Desde el
-  entorno de desarrollo (fuera de Argentina) el servidor corta el handshake TLS:
-  probable bloqueo por IP/geografía. El worker de producción tendría que correr
-  desde una IP argentina; hay que confirmarlo probando desde Argentina.
+- La consulta con código de gestión vive en `siat.rosario.gob.ar`. **Bloqueo
+  geográfico confirmado:** desde el exterior se corta el handshake TLS; desde una
+  conexión argentina responde 200. El worker tiene que correr desde Argentina.
+- Formulario (probado desde Argentina): campos `cuenta.numeroCuenta`,
+  `cuenta.codGesPer`, `cuenta.idRecurso`; **sin captcha detectado** en la página
+  de entrada (falta ver si aparece al enviar).
 
 ### Litoral Gas — Oficina Virtual `https://www.litoralgas.com.ar/ov/`
 - SPA Angular contra una API JSON del mismo dominio, con JWT (`/auth/login`).
@@ -89,8 +91,9 @@ Inspección de los formularios públicos, sin datos reales todavía.
   oficial/convenio con ASSA, boleta por mail, o consulta manual asistida.
 
 ### EPE
-- `www.epe.santafe.gov.ar` responde 500 desde el entorno de desarrollo (puede ser
-  el mismo bloqueo geográfico que SIAT); hay que probar desde Argentina.
+- `www.epe.santafe.gov.ar` responde 500 desde el exterior y 200 desde Argentina
+  (redirige a `epe.santafe.gov.ar/institucional/`): mismo bloqueo geográfico.
+  Falta revisar la Oficina Virtual.
 
 ## Consecuencias para el diseño
 
