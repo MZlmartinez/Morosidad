@@ -11,7 +11,7 @@ de desarrollo (dominios bloqueados por la política de red). Cada punto marcado
 | Municipalidad de Rosario (TGI) | Nº de cuenta **+ código de gestión personal** | No, pero pide los dos datos | "Pagar TGI" en rosario.gob.ar; MuniBot con solo la cuenta muestra vencimientos (sin verificar) | **Media-alta** |
 | EPE (luz) | Nº de suministro | **Sí** (Oficina Virtual: cuenta + suministros registrados) | No confirmado | **Media** |
 | ASSA (agua) | Punto de suministro / unidad de facturación (las fuentes no coinciden) | **Sí** para Oficina Virtual | WhatsApp 341 695-0008 con punto de suministro devuelve deuda (no automatizable de forma legítima) | **Media** |
-| Litoral Gas | Nº de cliente | **Sí** (email + contraseña en /ov/login) | No encontrado | **Baja-media** |
+| Litoral Gas | Nº de cliente | **Sí** (email + contraseña en /ov/login) | No encontrado; la OV tiene API JSON con endpoints de deuda | **Media-alta** |
 
 ## Detalle
 
@@ -48,6 +48,44 @@ de desarrollo (dominios bloqueados por la política de red). Cada punto marcado
 ### Litoral Gas
 - Oficina Virtual con email y contraseña; "Pagos y Deudas" y "Reimpresión de
   comprobantes" detrás del login. No se encontró consulta pública por nº de cliente.
+
+## Verificado contra los portales (30/10/2026)
+
+Inspección de los formularios públicos, sin datos reales todavía.
+
+### API Santa Fe — consulta de deuda: `https://www.santafe.gob.ar/e-in-liq-deuda/`
+- Formulario POST `frm_liqinmob`, `action=Ingreso::buscaPartida`, campos `nupartida`
+  (sin guiones ni espacios) y `fecha_calc` (fecha de cálculo, dd/mm/aaaa).
+- Sin login. Protección **ALTCHA** (prueba de trabajo SHA-256 que resuelve el
+  navegador, sin interacción humana; `maxNumber` 50000).
+- Horario del servicio: 03 a 24 h lun–sáb, 08 a 24 h domingos → el worker no
+  debe consultar fuera de esa franja.
+- `e-in-boletas/` (misma partida, también con ALTCHA) emite cuotas del año, pero
+  **no informa si están pagas**: el estado sale de `e-in-liq-deuda`.
+
+### TGI — `rosario.gob.ar/inicio/pagar-tgi`
+- Tres accesos: perfil digital, código de gestión (SIAT, acceso "anónimo") o ARCA.
+- **Clave para inmobiliarias:** con perfil digital verificado se pueden *asociar
+  cuentas de terceros* (nº de cuenta + código de gestión) y ver deuda, credencial
+  de pago y recibos de todas desde un solo perfil.
+- La consulta con código de gestión vive en `siat.rosario.gob.ar` (dominio
+  todavía bloqueado en el entorno).
+
+### Litoral Gas — Oficina Virtual `https://www.litoralgas.com.ar/ov/`
+- SPA Angular contra una API JSON del mismo dominio, con JWT (`/auth/login`).
+- Endpoints relevantes: `Clientes/LinkContract` (vincular varios contratos a una
+  cuenta), `Contratos/DebtSummary`, `Contratos/OverdueBills`,
+  `Contratos/OverdueBillsAll`, `Contratos/ProximosVencimientos`,
+  `Contratos/ReprintBill`, `Contratos/LastBill`, `Contratos/FreeDebt`.
+- Captcha visto solo en el reset de contraseña. **Viabilidad sube a alta** si una
+  cuenta admite muchos contratos vinculados (falta confirmar con una cuenta real).
+
+### ASSA — Oficina Virtual `https://ov.aguassantafesinas.com.ar/oficina-virtual/login`
+- Dominio distinto del sitio institucional; todavía bloqueado en el entorno.
+
+### EPE
+- `www.epe.santafe.gov.ar` responde 500 a clientes que no son navegador; queda
+  por revisar con un navegador real.
 
 ## Consecuencias para el diseño
 
