@@ -81,7 +81,12 @@ Inspección de los formularios públicos, sin datos reales todavía.
   cuenta), `Contratos/DebtSummary`, `Contratos/OverdueBills`,
   `Contratos/OverdueBillsAll`, `Contratos/ProximosVencimientos`,
   `Contratos/ReprintBill`, `Contratos/LastBill`, `Contratos/FreeDebt`.
-- Captcha visto solo en el reset de contraseña. **Viabilidad sube a alta** si una
+- Menú de la OV (verificado con cuenta real): "Mis facturas", "Facturas
+  adeudadas", "Estado de deuda", **"Vincular Cliente"** (varios clientes por
+  cuenta). El cliente se identifica como `srvcode/cntnumber` (ej. `10108/02`).
+- **"Estado de deuda" (informe PDF/mail) tiene reCAPTCHA** → no se automatiza.
+  Falta ver si "Facturas adeudadas" (`Contratos/OverdueBills`) lo tiene.
+- Captcha también en el reset de contraseña. **Viabilidad sube a alta** si una
   cuenta admite muchos contratos vinculados (falta confirmar con una cuenta real).
 
 ### ASSA — Oficina Virtual `https://ov.aguassantafesinas.com.ar/oficina-virtual/login`

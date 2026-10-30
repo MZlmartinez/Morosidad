@@ -26,8 +26,17 @@ page.on("response", async (res) => {
   console.log(`  ← ${res.status()} ${endpoint}`);
 });
 
-await page.goto("https://www.litoralgas.com.ar/ov/login", { waitUntil: "networkidle" });
-await page.locator("input[type=password]").waitFor();
+browser.on("disconnected", () => console.log("\nSe cerró el navegador."));
+// "networkidle" no sirve acá: el widget de chat mantiene conexiones abiertas.
+try {
+  await page.goto("https://www.litoralgas.com.ar/ov/login", { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await page.locator("input[type=password]").waitFor({ timeout: 60_000 });
+} catch (e) {
+  console.error(`\nNo se pudo abrir el login: ${e.message.split("\n")[0]}`);
+  console.error("No cierres la ventana de Chromium que abre el script (es distinta de tu Chrome).");
+  await browser.close().catch(() => {});
+  process.exit(1);
+}
 // Puede haber un aviso con botón "Aceptar" tapando el formulario.
 const aceptar = page.getByRole("button", { name: "Aceptar" });
 if (await aceptar.isVisible().catch(() => false)) await aceptar.click();
