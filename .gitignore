@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# resultados de las pruebas de concepto (datos personales)
+poc/resultados/
