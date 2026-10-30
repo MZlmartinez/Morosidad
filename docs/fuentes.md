@@ -68,8 +68,10 @@ Inspección de los formularios públicos, sin datos reales todavía.
 - **Clave para inmobiliarias:** con perfil digital verificado se pueden *asociar
   cuentas de terceros* (nº de cuenta + código de gestión) y ver deuda, credencial
   de pago y recibos de todas desde un solo perfil.
-- La consulta con código de gestión vive en `siat.rosario.gob.ar` (dominio
-  todavía bloqueado en el entorno).
+- La consulta con código de gestión vive en `siat.rosario.gob.ar`. Desde el
+  entorno de desarrollo (fuera de Argentina) el servidor corta el handshake TLS:
+  probable bloqueo por IP/geografía. El worker de producción tendría que correr
+  desde una IP argentina; hay que confirmarlo probando desde Argentina.
 
 ### Litoral Gas — Oficina Virtual `https://www.litoralgas.com.ar/ov/`
 - SPA Angular contra una API JSON del mismo dominio, con JWT (`/auth/login`).
@@ -81,11 +83,14 @@ Inspección de los formularios públicos, sin datos reales todavía.
   cuenta admite muchos contratos vinculados (falta confirmar con una cuenta real).
 
 ### ASSA — Oficina Virtual `https://ov.aguassantafesinas.com.ar/oficina-virtual/login`
-- Dominio distinto del sitio institucional; todavía bloqueado en el entorno.
+- Dominio distinto del sitio institucional. Login con email y contraseña
+  protegido con **Cloudflare Turnstile** (verificación antibot). Automatizarlo
+  implicaría eludir ese control: **no se automatiza**. Alternativas: canal
+  oficial/convenio con ASSA, boleta por mail, o consulta manual asistida.
 
 ### EPE
-- `www.epe.santafe.gov.ar` responde 500 a clientes que no son navegador; queda
-  por revisar con un navegador real.
+- `www.epe.santafe.gov.ar` responde 500 desde el entorno de desarrollo (puede ser
+  el mismo bloqueo geográfico que SIAT); hay que probar desde Argentina.
 
 ## Consecuencias para el diseño
 
